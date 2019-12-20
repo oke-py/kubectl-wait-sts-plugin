@@ -1,3 +1,4 @@
+project_name: kubectl-wait_sts
 before:
   hooks:
     - go mod download
