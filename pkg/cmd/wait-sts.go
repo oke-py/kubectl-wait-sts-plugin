@@ -3,7 +3,9 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"k8s.io/client-go/kubernetes"
 )
 
 const (
@@ -79,6 +81,20 @@ func (o *WaitStsOptions) Run() error {
 		o.namespace = namespace
 	}
 
-	fmt.Printf("%s in namespace/%s", o.name, o.namespace)
+	restConfig, err := options.ToRESTConfig()
+	if err != nil {
+		return err
+	}
+
+	client := kubernetes.NewForConfigOrDie(restConfig)
+
+	list, err := client.AppsV1().StatefulSets(o.namespace).List(metav1.ListOptions{
+		FieldSelector: fmt.Sprintf("metadata.name=%s", o.name),
+	})
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%v", list)
+
 	return nil
 }
