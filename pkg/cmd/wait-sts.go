@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
@@ -23,6 +25,7 @@ type WaitStsOptions struct {
 	args      []string
 	namespace string
 	name      string
+	timeout   time.Duration
 }
 
 // NewCmdWaitSts creates the cobra command to be executed
@@ -48,7 +51,7 @@ func NewCmdWaitSts() *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&o.namespace, "namespace", "n", o.namespace, "override the namespace defined in the current context")
-
+	cmd.Flags().DurationVar(&o.timeout, "timeout", 30*time.Second, "The length of time to wait before giving up.  Zero means check once and don't wait, negative means wait for a week.")
 	return cmd
 }
 
@@ -64,11 +67,19 @@ func (o *WaitStsOptions) Validate() error {
 		return fmt.Errorf("incorrect number of arguments, see --help for usage instructions")
 	}
 	o.name = o.args[0]
+
+	// negative means wait for a week
+	if o.timeout < 0 {
+		o.timeout = 168 * time.Hour
+	}
+
 	return nil
 }
 
 // Run waits until statefulset gets ready
 func (o *WaitStsOptions) Run() error {
+	endTime := time.Now().Add(o.timeout)
+
 	options := genericclioptions.NewConfigFlags(true)
 	kubeConfig := options.ToRawKubeConfigLoader()
 
@@ -88,13 +99,28 @@ func (o *WaitStsOptions) Run() error {
 
 	client := kubernetes.NewForConfigOrDie(restConfig)
 
-	list, err := client.AppsV1().StatefulSets(o.namespace).List(metav1.ListOptions{
+	watch, err := client.AppsV1().StatefulSets(o.namespace).Watch(metav1.ListOptions{
 		FieldSelector: fmt.Sprintf("metadata.name=%s", o.name),
 	})
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%v", list)
 
-	return nil
+	for {
+		sts, err := client.AppsV1().StatefulSets(o.namespace).Get(o.name, metav1.GetOptions{})
+		if err != nil {
+			return err
+		}
+
+		if *sts.Spec.Replicas == sts.Status.ReadyReplicas {
+			watch.Stop()
+			return nil
+		}
+
+		timeout := time.Until(endTime)
+		if timeout < 0 {
+			watch.Stop()
+			return fmt.Errorf("timed out waiting for the condition on statefulsets/%s", o.name)
+		}
+	}
 }
