@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/oke-py/kubectl-wait-sts/pkg/cmd"
+	"github.com/oke-py/kubectl-wait-sts-plugin/pkg/cmd"
 	"os"
 )
 
