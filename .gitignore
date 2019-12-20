@@ -1,3 +1,5 @@
+/kubectl-wait_sts
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
