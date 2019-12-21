@@ -1,5 +1,6 @@
 # kubectl-wait-sts-plugin
-kubectl wait-sts plugin makes it possible to wait until statefulset gets ready
+kubectl wait-sts plugin makes it possible to wait until statefulset gets ready.
+This plugin is a workaround for [kubernetes/kubernetes#79606](https://github.com/kubernetes/kubernetes/issues/79606).
 
 ```
 kubectl wait-sts -h
