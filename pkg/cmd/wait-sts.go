@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -99,7 +100,7 @@ func (o *WaitStsOptions) Run() error {
 
 	client := kubernetes.NewForConfigOrDie(restConfig)
 
-	watch, err := client.AppsV1().StatefulSets(o.namespace).Watch(metav1.ListOptions{
+	watch, err := client.AppsV1().StatefulSets(o.namespace).Watch(context.TODO(), metav1.ListOptions{
 		FieldSelector: fmt.Sprintf("metadata.name=%s", o.name),
 	})
 	if err != nil {
@@ -107,7 +108,7 @@ func (o *WaitStsOptions) Run() error {
 	}
 
 	for {
-		sts, err := client.AppsV1().StatefulSets(o.namespace).Get(o.name, metav1.GetOptions{})
+		sts, err := client.AppsV1().StatefulSets(o.namespace).Get(context.TODO(), o.name, metav1.GetOptions{})
 		if err != nil {
 			return err
 		}
