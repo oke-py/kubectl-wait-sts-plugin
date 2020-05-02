@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/oke-py/kubectl-wait-sts-plugin/pkg/cmd"
 	"os"
+
+	"github.com/oke-py/kubectl-wait-sts-plugin/pkg/cmd"
+	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 )
 
 func main() {
