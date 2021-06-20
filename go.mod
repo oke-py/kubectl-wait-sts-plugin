@@ -1,6 +1,6 @@
 module github.com/oke-py/kubectl-wait-sts-plugin
 
-go 1.13
+go 1.15
 
 require (
 	github.com/spf13/cobra v1.0.0
