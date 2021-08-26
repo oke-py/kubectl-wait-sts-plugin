@@ -17,7 +17,7 @@ fmt:
 
 lint:
 	(which $(GOBIN)/golangci-lint || go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1)
-	$(GOBIN)/golangci-lint run ./...
+	$(GOBIN)/golangci-lint run ./... --timeout 5m0s
 
 sec:
 	(which $(GOBIN)/gosec || go get github.com/securego/gosec/cmd/gosec)
