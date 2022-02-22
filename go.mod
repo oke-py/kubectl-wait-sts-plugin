@@ -7,6 +7,6 @@ require (
 	github.com/imdario/mergo v0.3.8 // indirect
 	github.com/spf13/cobra v1.3.0
 	k8s.io/apimachinery v0.23.4
-	k8s.io/cli-runtime v0.23.3
+	k8s.io/cli-runtime v0.23.4
 	k8s.io/client-go v0.23.4
 )
