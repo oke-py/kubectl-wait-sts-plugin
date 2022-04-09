@@ -2,7 +2,7 @@ PLUGIN_NAME := kubectl-wait_sts
 GO := GO111MODULE=on go
 GOBIN := $(shell go env GOPATH)/bin
 
-all: fix vet fmt lint build tidy
+all: fix vet fmt build tidy
 
 build:
 	$(GO) build -o $(PLUGIN_NAME) cmd/$(PLUGIN_NAME).go
@@ -14,10 +14,6 @@ fix:
 .PHONY: fmt
 fmt:
 	$(GO) fmt ./pkg/... ./cmd/...
-
-lint:
-	(which $(GOBIN)/golangci-lint || go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1)
-	$(GOBIN)/golangci-lint run ./... --timeout 5m0s
 
 tidy:
 	$(GO) mod tidy
