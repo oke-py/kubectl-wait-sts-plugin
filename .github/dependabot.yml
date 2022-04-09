@@ -1,6 +1,12 @@
 version: 2
 updates:
   - package-ecosystem: "gomod"
-    directory: "/" # Location of package manifests
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  # ref https://github.com/docker/build-push-action
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
       interval: "weekly"
