@@ -16,7 +16,7 @@ fmt:
 	$(GO) fmt ./pkg/... ./cmd/...
 
 lint:
-	(which $(GOBIN)/golangci-lint || go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.41.1)
+	(which $(GOBIN)/golangci-lint || go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.45.2)
 	$(GOBIN)/golangci-lint run ./... --timeout 5m0s
 
 tidy:
