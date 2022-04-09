@@ -1,6 +1,6 @@
 module github.com/oke-py/kubectl-wait-sts-plugin
 
-go 1.15
+go 1.17
 
 require (
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
